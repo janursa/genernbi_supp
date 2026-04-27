@@ -82,7 +82,7 @@ surrogate_names = {**surrogate_names, **{
 
 NEGATIVE_CONTROL = 'Dimethyl Sulfoxide'
 CONTROLS3 = ['Dabrafenib', 'Belinostat', 'Dimethyl Sulfoxide']
-SELECTED_MODELS = [surrogate_names[name] for name in ['ppcor', 'pearson_corr',  'portia', 'grnboost2',  'granie', 'scenicplus', 'scenic', 'negative_control', 'positive_control']]
+SELECTED_MODELS = [surrogate_names[name] for name in ['ppcor', 'pearson_corr',  'portia', 'grnboost',  'granie', 'scenicplus', 'scenic', 'negative_control', 'positive_control', 'celloracle']]
 
 
 if False:

@@ -23,5 +23,8 @@ draw/pngs/
 draw/.*
 repo/
 logs/*
+src/MMP/logs/
+src/ibd_biology/output/
 
 temp/
+src/__init__.py

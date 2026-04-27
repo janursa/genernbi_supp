@@ -50,8 +50,9 @@ column_info <- bind_rows(
     "Replicate consistency", "Replicate consistency", "Replicate consistency", "metric_1", "funkyrect",  "metric_1", list(width = 1.5),
     "TF binding", "TF binding", "TF binding", "metric_1", "funkyrect",  "metric_1", list(width = 1.5),
     "Gene sets recovery", "Gene sets recovery", "Gene sets recovery", "metric_1", "funkyrect",  "metric_1", list(width = 1.5),
-    # Datasets with surrogate names: OPSCA, ParseBioscience, 300BCG, IBD:UC, IBD:CD, Replogle, Xaira:HEK293T, Xaira:HCT116, Nakatake, Norman
+    # Datasets with surrogate names: OPSCA, ParseBioscience, 300BCG, IBD:UC, IBD:CD, Replogle, Xaira:HEK293T, Xaira:HCT116, Nakatake, Norman, MSCIC
     "OPSCA", "OPSCA", "OPSCA", "dataset", "funkyrect", "dataset", list(width = 1.5),
+    "MSCIC", "MSCIC", "MSCIC", "dataset", "funkyrect", "dataset", list(width = 1.5),
     "ParseBioscience", "ParseBioscience", "ParseBioscience", "dataset", "funkyrect", "dataset", list(width = 1.5),
     "300BCG", "300BCG", "300BCG", "dataset", "funkyrect", "dataset", list(width = 1.5),
     "IBD:UC", "IBD:UC", "IBD:UC", "dataset", "funkyrect", "dataset", list(width = 1.5),
@@ -101,7 +102,7 @@ method_type_mapping <- tribble(
   "Pearson Corr.", "C",
   "Spearman Corr.", "S",
   "scPRINT", "F",
-  "GeneFormer", "F",
+  "Geneformer", "F",
   "scGPT", "F"
 )
 

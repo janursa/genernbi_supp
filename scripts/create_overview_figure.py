@@ -25,7 +25,8 @@ GRN_BENCHMARK_DIR = env['geneRNBI_DIR']
 # Add task_grn_inference to path; clear cached src so it re-resolves to task_grn_inference's src
 sys.path.insert(0, TASK_GRN_INFERENCE_DIR)
 sys.modules.pop('src', None)
-from src.utils.config import DATASETS, METHODS, METRICS
+from src.utils.config import DATASETS, METHODS, METRICS, DATASET_INFO
+from src.utils.util import compute_overall_scores
 
 
 def process_scores_from_yaml(score_file):
@@ -270,103 +271,18 @@ def main(local_run=False, methods=None, datasets=None):
     print(f"   Using applicability-filtered METRICS for ranking: {len(final_metrics)} metrics")
     print(f"   Ranking metrics: {final_metrics}")
     
-    # Normalize the scores per dataset
-    def normalize_scores_per_dataset(df):
-        df = df.set_index('model')
-        # Mark originally missing values (methods not run on this dataset)
-        original_missing = df.isna()
-        
-        df[df < 0] = 0
-        # Normalize each column
-        for col in df.columns:
-            col_values = df[col]
-            col_min = col_values.min()
-            col_max = col_values.max()
-            if col_max > col_min:
-                df[col] = (col_values - col_min) / (col_max - col_min)
-            else:
-                # All same value - set to 0
-                df[col] = 0
-        
-        # Restore NaN for originally missing values
-        df[original_missing] = float('nan')
-        return df
-    
-    df_all_n = scores_all.groupby('dataset').apply(normalize_scores_per_dataset).reset_index()
-    
-    # Average scores for all datasets (per metric)
-    def mean_for_metrics(df):
-        # Calculate mean across datasets for each metric, ignoring NaN values
-        return df.drop(['dataset'], axis=1).mean(skipna=True)
-    
-    df_metrics = (
-        df_all_n.groupby(['model'])
-        .apply(mean_for_metrics)
-    )
-    
-    # Normalize the averaged metrics to [0, 1] range
-    for col in df_metrics.columns:
-        # Keep track of NaN values
-        original_nans = df_metrics[col].isna()
-        col_max = df_metrics[col].max()
-        col_min = df_metrics[col].min()
-        if col_max > col_min:
-            df_metrics[col] = (df_metrics[col] - col_min) / (col_max - col_min)
-        else:
-            df_metrics[col] = 0
-        # Restore NaN
-        df_metrics.loc[original_nans, col] = float('nan')
-    
-    # Keep all metrics in METRICS order
-    metrics_ordered = [m for m in METRICS if m in df_metrics.columns]
-    df_metrics = df_metrics[metrics_ordered]
-    
-    # Average scores for all datasets (per dataset)
-    def mean_for_datasets(df):
-        # print(df.set_index('dataset')[metrics].T.mean(skipna=True))
-        return df.set_index('dataset')[metrics].T.mean(skipna=True)
-    
-    df_datasets = (
-        df_all_n.groupby(['model'])
-        .apply(mean_for_datasets)
-        .reset_index()
-    )
-    df_datasets = df_datasets.pivot(index='model', columns='dataset', values=0)
-    
-    # Normalize the per-dataset scores to [0, 1] range
-    for col in df_datasets.columns:
-        original_nans = df_datasets[col].isna()
-        col_max = df_datasets[col].max()
-        col_min = df_datasets[col].min()
-        if col_max > col_min:
-            df_datasets[col] = (df_datasets[col] - col_min) / (col_max - col_min)
-        else:
-            df_datasets[col] = 0
-        # Restore NaN for methods not run on this dataset
-        df_datasets.loc[original_nans, col] = float('nan')
-    
-    # Calculate overall scores
-    df_scores = pd.concat([df_metrics, df_datasets], axis=1)
-    
-    # Remove columns (metrics/datasets) that are all NaN across all methods
-    cols_before = len(df_scores.columns)
-    df_scores = df_scores.dropna(axis=1, how='all')
-    cols_after = len(df_scores.columns)
-    if cols_before > cols_after:
-        print(f"   Removed {cols_before - cols_after} columns that were all NaN")
-    
-    # Handle any duplicate index entries
-    if df_scores.index.duplicated().any():
-        print(f"   Warning: Found duplicate methods in scores, taking mean")
-        df_scores = df_scores.groupby(df_scores.index).mean()
-    
-    # Calculate overall score using all applicability-filtered metrics + datasets
-    final_metrics_cols = [col for col in final_metrics if col in df_scores.columns]
-    dataset_cols = [col for col in df_scores.columns if col in DATASETS]
-    
-    ranking_cols = final_metrics_cols + dataset_cols
-    df_scores['overall_score'] = df_scores[ranking_cols].median(axis=1, skipna=True)
-    
+    # Build modality groups for balanced ranking
+    modality_groups = {}
+    for dataset in DATASETS:
+        if dataset not in scores_all['dataset'].unique():
+            continue
+        modality = DATASET_INFO.get(dataset, {}).get('Modality', 'Transcriptomics')
+        modality_groups.setdefault(modality, []).append(dataset)
+
+    df_scores = compute_overall_scores(scores_all, final_metrics, DATASETS, modality_groups=modality_groups)
+
+    final_metrics_cols = [m for m in final_metrics if m in df_scores.columns]
+    dataset_cols = [c for c in df_scores.columns if c in DATASETS]  # display only non-IBD datasets
     print(f"   Overall scores calculated using applicability-filtered metrics ({len(final_metrics_cols)} metrics) + datasets ({len(dataset_cols)} datasets)")
     
     # Keep track of which methods are in the filtered scores
@@ -404,7 +320,7 @@ def main(local_run=False, methods=None, datasets=None):
         'Negative Ctrl': 10,
         'GRaNIE': 6,
         'scPRINT': 5,
-        'GeneFormer': 5,
+        'Geneformer': 5,
         'scGPT': 3,
     })
     

@@ -30,7 +30,7 @@ parser.add_argument(
     '--cv_threshold',
     type=float,
     default=0.2,
-    help='Threshold for coefficient of variation (std/mean)'
+    help='Threshold for coefficient of variation (max - min) / mean'
 )
 parser.add_argument(
     '--output',
@@ -105,18 +105,25 @@ def load_scores_from_yaml(dataset):
     return df
 
 
-def evaluate_metric_for_dataset(scores_df, metric, cv_threshold=0.2, nc_score=None):
+def evaluate_metric_for_dataset(scores_df, metric, cv_threshold=0.2, nc_score=None, pc_score=None):
     """
     Evaluate if a metric should be kept for a dataset.
-    
+
+    Two criteria must both pass:
+      (i)  CV = (max - min) / mean >= cv_threshold (variability across methods)
+      (ii) max score >= max(nc_score, global_threshold) where global_threshold
+           is the metric-specific floor from METRIC_THRESHOLDS. The global floor
+           ensures metrics are not kept when all methods perform at a trivially
+           low absolute level, even if one nominally outperforms the NC.
+
     Args:
         scores_df: DataFrame with methods as rows and metrics as columns
         metric: The metric name to evaluate
-        cv_threshold: Threshold for coefficient of variation (std/mean)
-        nc_score: Negative control score for this metric on this dataset.
-                  If provided, used as the per-dataset threshold (instead of
-                  the global METRIC_THRESHOLDS value).
-    
+        cv_threshold: Minimum CV threshold (default 0.2)
+        nc_score: Negative control score; used as per-dataset threshold when
+                  stricter than the global floor.
+        pc_score: Not used in this criterion (kept for API compatibility).
+
     Returns:
         dict with evaluation results
     """
@@ -126,9 +133,9 @@ def evaluate_metric_for_dataset(scores_df, metric, cv_threshold=0.2, nc_score=No
             'present': False,
             'reason': 'Metric not computed for this dataset'
         }
-    
+
     values = scores_df[metric].dropna()
-    
+
     if len(values) < 2:
         return {
             'metric': metric,
@@ -141,41 +148,43 @@ def evaluate_metric_for_dataset(scores_df, metric, cv_threshold=0.2, nc_score=No
             'cv': np.nan,
             'max': np.nan
         }
-    
+
     mean_val = values.mean()
     std_val = values.std()
     max_val = values.max()
     min_val = values.min()
-    
-    # Coefficient of variation
+
+    # (i) Coefficient of variation
     cv = (max_val - min_val) / mean_val if mean_val != 0 else np.inf
-    
-    # Threshold: use max(nc_score, global_threshold) so NC is used when stricter,
-    # and the global floor prevents near-zero NC values from trivially passing.
+    cv_passes = cv >= cv_threshold
+
+    # (ii) Max score must exceed both NC and the global floor
     global_threshold = METRIC_THRESHOLDS.get(metric, 0.1)
     if nc_score is not None and not np.isnan(nc_score):
         threshold = max(nc_score, global_threshold)
     else:
         threshold = global_threshold
-    
-    # Decision criteria
-    cv_passes = cv >= cv_threshold
     max_passes = max_val >= threshold
-    
-    keep = cv_passes and max_passes
-    
-    # Build reason string
+
+    # (iii) Positive control must outperform negative control
+    pc_nc_valid = (
+        pc_score is not None and not np.isnan(pc_score) and
+        nc_score is not None and not np.isnan(nc_score)
+    )
+    pc_passes = (pc_score > nc_score) if pc_nc_valid else True  # skip if controls unavailable
+
+    keep = cv_passes and max_passes and pc_passes
+
     reasons = []
     if not cv_passes:
         reasons.append(f'Low variability (CV={cv:.3f} < {cv_threshold})')
     if not max_passes:
-        reasons.append(f'Low max score (max={max_val:.3f} < {threshold:.3f})')
-    
-    if keep:
-        reason = 'Passes all criteria'
-    else:
-        reason = '; '.join(reasons)
-    
+        reasons.append(f'Low max score (max={max_val:.3f} < threshold={threshold:.3f})')
+    if not pc_passes:
+        reasons.append(f'PC not > NC (PC={pc_score:.4f}, NC={nc_score:.4f})')
+
+    reason = 'Passes all criteria' if keep else '; '.join(reasons)
+
     return {
         'metric': metric,
         'present': True,
@@ -188,6 +197,7 @@ def evaluate_metric_for_dataset(scores_df, metric, cv_threshold=0.2, nc_score=No
         'max': max_val,
         'threshold': threshold,
         'global_threshold': global_threshold,
+        'pc_score': pc_score if pc_nc_valid else np.nan,
         'nc_score': nc_score if (nc_score is not None and not np.isnan(nc_score)) else np.nan,
         'cv_threshold': cv_threshold
     }
@@ -200,7 +210,7 @@ def evaluate_all_datasets(datasets=None, metrics=None, cv_threshold=0.2, output_
     Args:
         datasets: List of datasets to evaluate (default: all DATASETS)
         metrics: List of metrics to evaluate (default: all METRICS)
-        cv_threshold: Threshold for coefficient of variation
+        cv_threshold: Minimum CV = (max - min) / mean threshold (default 0.2)
         output_file: Path to save results CSV (optional)
     
     Returns:
@@ -217,8 +227,9 @@ def evaluate_all_datasets(datasets=None, metrics=None, cv_threshold=0.2, output_
         scores_all = scores_all[METRICS + ['method', 'dataset']]
         scores_all.rename(columns={'method': 'model'}, inplace=True)
     
-    # Pre-extract negative control scores per dataset per metric (used as per-dataset threshold)
+    # Pre-extract negative and positive control scores per dataset per metric
     nc_scores = {}  # nc_scores[dataset][metric] = nc_score
+    pc_scores = {}  # pc_scores[dataset][metric] = pc_score
     if local_run:
         nc_df = scores_all[scores_all['model'] == 'negative_control'].copy()
         for _, row in nc_df.iterrows():
@@ -227,6 +238,13 @@ def evaluate_all_datasets(datasets=None, metrics=None, cv_threshold=0.2, output_
             for metric in metrics:
                 if metric in row and not pd.isna(row[metric]):
                     nc_scores[ds][metric] = row[metric]
+        pc_df = scores_all[scores_all['model'] == 'positive_control'].copy()
+        for _, row in pc_df.iterrows():
+            ds = row['dataset']
+            pc_scores.setdefault(ds, {})
+            for metric in metrics:
+                if metric in row and not pd.isna(row[metric]):
+                    pc_scores[ds][metric] = row[metric]
     
     # print(f"Evaluating {len(metrics)} metrics across {len(datasets)} datasets")
     # print(f"CV threshold: {cv_threshold}")
@@ -265,7 +283,8 @@ def evaluate_all_datasets(datasets=None, metrics=None, cv_threshold=0.2, output_
         # Evaluate each metric
         for metric in metrics:
             nc_score = nc_scores.get(dataset, {}).get(metric, None)
-            result = evaluate_metric_for_dataset(scores_df, metric, cv_threshold, nc_score=nc_score)
+            pc_score = pc_scores.get(dataset, {}).get(metric, None)
+            result = evaluate_metric_for_dataset(scores_df, metric, cv_threshold, nc_score=nc_score, pc_score=pc_score)
             result['dataset'] = dataset
             all_results.append(result)
             
@@ -281,8 +300,8 @@ def evaluate_all_datasets(datasets=None, metrics=None, cv_threshold=0.2, output_
     results_df = pd.DataFrame(all_results)
     
     # Reorder columns for better readability
-    cols_order = ['dataset', 'metric', 'keep', 'present', 'reason', 
-                  'n_methods', 'mean', 'std', 'cv', 'max', 'threshold', 'global_threshold', 'nc_score', 'cv_threshold']
+    cols_order = ['dataset', 'metric', 'keep', 'present', 'reason',
+                  'n_methods', 'mean', 'std', 'cv', 'max', 'threshold', 'global_threshold', 'pc_score', 'nc_score', 'cv_threshold']
     cols_order = [c for c in cols_order if c in results_df.columns]
     results_df = results_df[cols_order]
     
@@ -351,7 +370,7 @@ def evaluate_all_datasets(datasets=None, metrics=None, cv_threshold=0.2, output_
         'max': ['min', 'max'],
         'cv': ['min', 'max']
     })
-    
+
     # Consolidate min/max into single columns with rounding
     metric_summary['Value (min/max)'] = metric_stats.apply(
         lambda row: f"{row[('max', 'min')]:.1f}/{row[('max', 'max')]:.1f}", axis=1
@@ -359,8 +378,8 @@ def evaluate_all_datasets(datasets=None, metrics=None, cv_threshold=0.2, output_
     metric_summary['Variability (min/max)'] = metric_stats.apply(
         lambda row: f"{row[('cv', 'min')]:.1f}/{row[('cv', 'max')]:.1f}", axis=1
     )
-    
-    # Add threshold column: global floor only
+
+    # Add threshold column: global floor per metric
     global_thresholds = metric_present.groupby('metric')['global_threshold'].first()
     nc_stats = metric_present.groupby('metric')['nc_score'].agg(['min', 'max'])
     metric_summary['Threshold'] = global_thresholds.map(lambda g: f"{g:.2f}")
@@ -652,7 +671,7 @@ def plot_metric_applicability():
     }
 
     # Build binary applicability matrix (metrics × datasets)
-    dataset_order = ['op', 'parsebioscience', '300BCG', 'ibd_uc', 'ibd_cd',
+    dataset_order = ['op', 'parsebioscience', '300BCG', 'MSCIC',
                      'replogle', 'xaira_HEK293T', 'xaira_HCT116', 'nakatake', 'norman']
     metric_order = METRICS  # as defined in config
 

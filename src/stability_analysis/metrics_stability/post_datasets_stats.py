@@ -50,6 +50,7 @@ def plot_table(summary, figsize=(6,6)):
     tbl.auto_set_font_size(False)
     tbl.set_fontsize(12)
     tbl.scale(1.2, 1.2)
+    tbl.auto_set_column_width(col=list(range(summary.shape[1])))
     n_rows = summary.shape[0] + 1  # +1 for header
     n_cols = summary.shape[1]
     for (r, c), cell in tbl.get_celld().items():
@@ -82,7 +83,7 @@ def main_datasets_stats(force=False):
         cell_counts = []
         for dataset in DATASETS: 
             print(dataset)
-            adata = ad.read_h5ad(f"{TASK_GRN_INFERENCE_DIR}/resources/extended_data/{dataset}_bulk.h5ad", backed="r")
+            adata = ad.read_h5ad(f"{TASK_GRN_INFERENCE_DIR}/resources/extended_data/{dataset}_rna_all.h5ad", backed="r")
             try:
                 cell_count = adata.obs['cell_count'].sum()
                 
@@ -101,7 +102,8 @@ def main_datasets_stats(force=False):
                 adata.obs["perturbation"] = "control"
             num_unique_perturbations_inference = adata.obs["perturbation"].nunique()
 
-            adata = ad.read_h5ad(f"{TASK_GRN_INFERENCE_DIR}/resources/grn_benchmark/evaluation_data/{dataset}_bulk.h5ad", backed="r")
+            eval_suffix = "_sc" if dataset == "MSCIC" else "_bulk"
+            adata = ad.read_h5ad(f"{TASK_GRN_INFERENCE_DIR}/resources/grn_benchmark/evaluation_data/{dataset}{eval_suffix}.h5ad", backed="r")
             num_samples_eval = adata.n_obs
             if "perturbation" not in adata.obs:
                 adata.obs["perturbation"] = "control"
@@ -120,7 +122,8 @@ def main_datasets_stats(force=False):
             "Measurement time": info["Measurement time"],
             "Cell count": cell_count,
             "Modality": info["Modality"],
-                'Condition': "Crohn's disease" if dataset=='ibd_cd' else  ('Ulcerative colitis' if dataset=='ibd_uc' else 'Healthy')
+            "Raw/Norm.": ("✓" if info.get("has_raw_counts") else "-") + "/✓",
+                # 'Condition': "Crohn's disease" if dataset=='ibd_cd' else  ('Ulcerative colitis' if dataset=='ibd_uc' else 'Healthy')
             })
         stats_df = pd.DataFrame(stats_store)
         
@@ -135,11 +138,7 @@ def main_datasets_stats(force=False):
     print('Cell type: ', stats_df['Cell type'].nunique())
 
       
-<<<<<<< HEAD
-    plot_table(stats_df, figsize=(1.3*stats_df.shape[1], 1.1*stats_df.shape[0]))
-=======
     plot_table(stats_df, figsize=(1.3*stats_df.shape[1], .3*stats_df.shape[0]))
->>>>>>> 8f2ceb44c07e8c290a90f8471680e8dede119e48
     file_name = f'{figs_dir}/table_datasets_summary.png'
     print('dataset summary table: ', file_name)
     plt.savefig(file_name, bbox_inches='tight', pad_inches=0.01, dpi=300)
@@ -149,7 +148,7 @@ def main_datasets_stats(force=False):
     plt.savefig(file_name, bbox_inches='tight', pad_inches=0.01, dpi=300)
     plt.close()
 
-    df_sub = stats_df[['Dataset', 'Cell type', 'Perturb type', 'Unique perturbs' ,'Condition', 'Modality']]
+    df_sub = stats_df[['Dataset', 'Cell type', 'Perturb type', 'Unique perturbs', 'Modality']]
     plot_table(df_sub, figsize=(1.3*df_sub.shape[1], .3*df_sub.shape[0]))
     file_name = f'{figs_dir}/table_datasets_summary_short.pdf'
     print('dataset summary table short: ', file_name)
@@ -233,7 +232,7 @@ def main_perturbation_effects():
     # plt.close()
 def main_gene_wise():
     for i, dataset in enumerate(DATASETS):   
-        adata = ad.read_h5ad(f'{TASK_GRN_INFERENCE_DIR}/resources/extended_data/{dataset}_bulk.h5ad')
+        adata = ad.read_h5ad(f'{TASK_GRN_INFERENCE_DIR}/resources/extended_data/{dataset}_rna_all.h5ad')
         control_mask = adata.obs['is_control']
         non_control_mask = ~adata.obs['is_control']
         X = adata.X.toarray() if hasattr(adata.X, 'toarray') else adata.X
@@ -251,3 +250,7 @@ def main_gene_wise():
         plt.yscale('log')
         plt.tight_layout()
         plt.show()
+
+if __name__ == "__main__":
+    main_datasets_stats()
+    main_perturbation_effects()

@@ -154,7 +154,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--output_dir_local",
-        default=f"{grn_dir}/output/figs/raw_scores",
+        default=f"{results_dir}/figs/raw_scores",
         help="Local output directory for figures",
     )
     parser.add_argument(

@@ -9,11 +9,11 @@ from util import naming_convention, process_links
 
 # Metric functions relevant per permutation type.
 # net / direction: full topology changes → all metrics affected.
-# sign / weight:   only affect edge ranking, not expression magnitude or TF identity
-#                  → sem and vc are not meaningfully affected.
+# sign: flips edge signs → sem and vc are sign-aware, so they are included.
+# weight: adds noise to edge weights → affects ranking-based metrics only.
 PERMUTATION_METRIC_MAP = {
     'net':       ['regression', 'ws_distance', 'sem', 'tf_recovery', 'tf_binding', 'vc', 'gs_recovery'],
-    'sign':      [],
+    'sign':      ['sem', 'vc'],
     'weight':    ['regression', 'ws_distance', 'tf_recovery', 'tf_binding', 'gs_recovery'],
 }
 

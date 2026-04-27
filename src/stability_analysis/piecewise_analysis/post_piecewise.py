@@ -242,7 +242,7 @@ def wrapper_plot_regression(gene_wise_output):
     df = df_raw.rename({'r2': 'R2 score', 'n_regulators': 'Number of regulators'}, axis=1)
     plot_lowness_reg(df[df['Number of regulators']<df['Number of regulators'].quantile(0.99)], x_col='Number of regulators', y_col='R2 score')
     file_name = f"{RESULTS_DIR}/figs/lowess_nreg_vs_r2.png"
-    print(f"Saving figure to {file_name}")
+    print(f"Saved: {os.path.abspath(file_name)}")
     plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
 
     _ = plot_model_comparison_with_significance(df_thetas.rename({'gene':'source', 'n_regulators':'present_edges_n'}, axis=1), 
@@ -257,7 +257,7 @@ def wrapper_plot_regression(gene_wise_output):
                                             ylim=None)
     plt.title('')
     file_name = f"{RESULTS_DIR}/figs/model_comparison_regression_thetas.png"
-    print(f"Saving figure to {file_name}")
+    print(f"Saved: {os.path.abspath(file_name)}")
     plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
     _ = plot_model_comparison_with_significance(df_raw.rename({'gene':'source', 'n_regulators':'present_edges_n'}, axis=1), 
                                                 model_order=['Pearson Corr.', 'Scenic+', 'GRNBoost2', 'PPCOR'],
@@ -272,7 +272,7 @@ def wrapper_plot_regression(gene_wise_output):
                                                 )
     plt.title('')
     file_name = f"{RESULTS_DIR}/figs/model_comparison_regression_raw.png"
-    print(f"Saving figure to {file_name}")
+    print(f"Saved: {os.path.abspath(file_name)}")
     plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
 
 
@@ -450,7 +450,7 @@ def wrapper_regression_feature_analysis(dataset, gene_wise_feature_importance):
             ax.tick_params(axis='x', rotation=45)
             ax.set_ylabel('')
             file_name = f"{RESULTS_DIR}/figs/reg_feature_importance_stability_{dataset}_{theta}.png"
-            print(f"Saving figure to {file_name}")
+            print(f"Saved: {os.path.abspath(file_name)}")
             plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
 
         if True:
@@ -467,7 +467,7 @@ def wrapper_regression_feature_analysis(dataset, gene_wise_feature_importance):
             ax.legend(handles=legend_elements, loc=(1.22, 0.3),
                     frameon=False, title="Gene has regulator")
             file_name = f"{RESULTS_DIR}/figs/regression_nregulators_vs_r2scoes_{dataset}_{theta}.png"
-            print(f"Saving figure to {file_name}")
+            print(f"Saved: {os.path.abspath(file_name)}")
             plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
         if True:
             ### Similary of scores across donors
@@ -476,7 +476,7 @@ def wrapper_regression_feature_analysis(dataset, gene_wise_feature_importance):
             plot_regression_perfromance_similarity_donors(scores_reg, axes)
 
             file_name = f"{RESULTS_DIR}/figs/regression_scores_similarity_donors_{dataset}_{theta}.png"
-            print(f"Saving figure to {file_name}")
+            print(f"Saved: {os.path.abspath(file_name)}")
             fig.savefig(
                 file_name, 
                 dpi=300, 
@@ -488,7 +488,7 @@ def wrapper_regression_feature_analysis(dataset, gene_wise_feature_importance):
             fig, ax = plt.subplots(1, 1, figsize=(3, 3), constrained_layout=True)
             plot_performance_similarity_models_reg(scores_reg, ax)
             file_name = f"{RESULTS_DIR}/figs/regression_models_corr_{dataset}_{theta}.png"
-            print(f"Saving figure to {file_name}")
+            print(f"Saved: {os.path.abspath(file_name)}")
             fig.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
 
 
@@ -509,7 +509,7 @@ def wrapper_regression_feature_analysis(dataset, gene_wise_feature_importance):
         ax.legend(handles=legend_elements, loc=(1.3, 0), frameon=False, title='Gene has regulator in:')
         plt.tight_layout()
         file_name = f"{RESULTS_DIR}/figs/regression_joint_tfactivity_vs_r2scores_{dataset}_{theta}.png"
-        print(f"Saving figure to {file_name}")
+        print(f"Saved: {os.path.abspath(file_name)}")
         plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
 
 def plot_performance_similarity_models_ws(df, ax, score_col='r2score'):
@@ -558,7 +558,7 @@ def wrapper_ws_analysis(dataset, ws_output):
         plot_performance_similarity_models_ws(df_mean, ax, score_col='ws_distance_pc')
         plt.title(theta)
         file_name = f"{RESULTS_DIR}/figs/ws_models_corr_{theta}.png".replace(' ', '_').replace('(', '').replace(')', '')
-        print(f"Saving figure to {file_name}")
+        print(f"Saved: {os.path.abspath(file_name)}")
         fig.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
     # ----- WS vs perturbation effect
     perturb_effect_all = pd.read_csv(f'{RESULTS_DIR}/perturb_effect_all.csv')
@@ -579,7 +579,7 @@ def wrapper_ws_analysis(dataset, ws_output):
 
     plot_lowness_reg(subset, x_col='WS distance (raw)', y_col='Expression fold change (abs)')
     file_name = f"{RESULTS_DIR}/figs/ws_vs_perturbation_effect_{dataset}.png"
-    print(f"Saving figure to {file_name}")
+    print(f"Saved: {os.path.abspath(file_name)}")
     plt.savefig(file_name,
                 dpi=300, transparent=True, bbox_inches='tight')
 
@@ -591,7 +591,7 @@ def wrapper_ws_analysis(dataset, ws_output):
                                                 model_order=['Pearson Corr.', 'Scenic', 'GRNBoost2', 'PPCOR'],
                                                 ylim=(-.01, .2))
     file_name = f"{RESULTS_DIR}/figs/ws_distance_comparision_{dataset}.png"
-    print(f"Saving figure to {file_name}")
+    print(f"Saved: {os.path.abspath(file_name)}")
     plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
     
     _ = plot_model_comparison_with_significance(ws_thetas, per_theta=True, 
@@ -601,7 +601,7 @@ def wrapper_ws_analysis(dataset, ws_output):
                                                 model_order=['Pearson Corr.', 'Scenic', 'GRNBoost2', 'PPCOR'],
                                                 ylim=(-.1, 1.3)) 
     file_name = f"{RESULTS_DIR}/figs/ws_distance_normalized_comparision_{dataset}.png"
-    print(f"Saving figure to {file_name}")
+    print(f"Saved: {os.path.abspath(file_name)}")
     plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
 
     # ----- Joint distribution of TF-wise scores (similar to regression analysis)
@@ -623,5 +623,5 @@ def wrapper_ws_analysis(dataset, ws_output):
     ax.legend(handles=legend_elements, loc=(1.3, 0), frameon=False, title='TF present in:')
     plt.tight_layout()
     file_name = f"{RESULTS_DIR}/figs/ws_joint_tfwise_scores_{dataset}.png"
-    print(f"Saving figure to {file_name}")
+    print(f"Saved: {os.path.abspath(file_name)}")
     plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')

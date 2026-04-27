@@ -18,6 +18,7 @@ from geneRNBI.src.helper import plot_heatmap, surrogate_names, palette_metrics, 
 from task_grn_inference import METRICS
 
 INDIVIDUAL_DATASETS = ['op']
+EXCLUDE_DATASETS = ['ibd_cd', 'ibd_uc']
 
 
 def extract_tissue_name(x):
@@ -54,6 +55,7 @@ available_datasets = sorted([
     f.replace('metrics_', '').replace('.csv', '')
     for f in os.listdir(global_grns_dir)
     if f.startswith('metrics_') and f.endswith('.csv') and f != 'metrics_all.csv'
+    and f.replace('metrics_', '').replace('.csv', '') not in EXCLUDE_DATASETS
 ])
 
 all_metrics = {}

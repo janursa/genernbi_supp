@@ -277,22 +277,34 @@ def plot_metrics_as_axes(metrics, dataset, save_tag='_all', use_raw_scores=False
         
         return df_pivot_norm
     
+    # Metrics that encode sign information
+    SIGN_METRICS = {'vc', 'sem'}
+
     # Create one figure per permutation type
     for permute_type in permute_types:
-        n_cols = n_metrics
-        n_rows = (n_metrics + n_cols - 1) // n_cols
-        
+        # For sign permutation, only show metrics that encode sign
+        if permute_type == 'TF-gene sign':
+            plot_metrics = [m for m in available_metrics if m in SIGN_METRICS]
+        else:
+            plot_metrics = available_metrics
+
+        if not plot_metrics:
+            continue
+
+        n_cols = len(plot_metrics)
+        n_rows = 1
+
         # Make figure bigger for raw scores
         if use_raw_scores:
             fig, axes = plt.subplots(n_rows, n_cols, figsize=(2.5*n_cols, 2.5*n_rows), sharey=False)
         else:
             fig, axes = plt.subplots(n_rows, n_cols, figsize=(1.7*n_cols, 2.4*n_rows), sharey=False)
-        if n_metrics == 1:
+        if n_cols == 1:
             axes = [axes]
         else:
             axes = axes.flatten() if n_rows > 1 or n_cols > 1 else [axes]
-        
-        for idx, metric in enumerate(available_metrics):
+
+        for idx, metric in enumerate(plot_metrics):
             if idx >= len(axes):
                 break
                 
@@ -345,11 +357,11 @@ def plot_metrics_as_axes(metrics, dataset, save_tag='_all', use_raw_scores=False
             ax.margins(x=.1, y=.2)
             
             # Add legend to the last axis only
-            if idx == n_metrics - 1:
+            if idx == len(plot_metrics) - 1:
                 ax.legend(loc=[1.07, .2], frameon=False, fontsize=8)
         
         # Hide unused subplots
-        for idx in range(n_metrics, len(axes)):
+        for idx in range(len(plot_metrics), len(axes)):
             axes[idx].set_visible(False)
         
         # plt.suptitle(f"{permute_type}", y=1.02, weight='bold', fontsize=14)

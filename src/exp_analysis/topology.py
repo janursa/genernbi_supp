@@ -185,9 +185,9 @@ ax4.set_yticklabels([])
 ax4.legend(frameon=False, loc=(1.1, .2), title='GRN model')
 
 ax1.set_position([0.01, 0.1, 0.20, 0.75])  
-ax2.set_position([0.24, 0.1, 0.20, 0.75])  
-ax3.set_position([0.50, 0.20, 0.11, 0.55])
-ax4.set_position([0.64, 0.20, 0.11, 0.55]) 
+ax2.set_position([0.27, 0.1, 0.20, 0.75])  
+ax3.set_position([0.55, 0.20, 0.11, 0.55])
+ax4.set_position([0.69, 0.20, 0.11, 0.55]) 
 file_name = f"{RESULTS_DIR}/figs/topology_stats.png"
 print(f"Saving figure to {file_name}")
 plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
@@ -196,7 +196,7 @@ additional_models = [model for model in topology_stats['Model'].unique() if mode
 palette_methods_all = {**{name:color for name, color in zip(additional_models, palette_celltype)}, **palette_methods}
 
 
-single_modality = ['PPCOR', 'Positive Ctrl', 'Pearson Corr.', 'Portia', 'GRNBoost2', 'Scenic', 'scPRINT', 'scGPT', 'GeneFormer']
+single_modality = ['PPCOR', 'Positive Ctrl', 'Pearson Corr.', 'Portia', 'GRNBoost2', 'Scenic', 'scPRINT', 'scGPT', 'Geneformer']
 
 g = sns.catplot(
     data=topology_stats[topology_stats['Model'].isin(single_modality)],
@@ -226,7 +226,7 @@ print(f"Saving figure to {file_name}")
 plt.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
 
 g = sns.catplot(
-    data=topology_stats[(~topology_stats['Model'].isin(single_modality))&(topology_stats['Dataset'].isin(['OPSCA', 'IBD:UC', 'IBD:CD']))],
+    data=topology_stats[(~topology_stats['Model'].isin(single_modality))&(topology_stats['Dataset'].isin(['OPSCA', 'MSCIC']))],
     kind='bar',
     hue='Model',
     # hue_order=order_names,  # Specify the desired order of hue categories

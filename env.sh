@@ -1,7 +1,7 @@
 # env.sh
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     base_dir="/home/jnourisa/projs/ongoing"
-    resources_dir="/vol/projects/jnourisa/genernbi/resources"
+    resources_dir="${base_dir}/task_grn_inference/resources"
 else
     base_dir="/Users/jno24/Documents/projs/ongoing"
     resources_dir="${base_dir}/task_grn_inference/resources"
