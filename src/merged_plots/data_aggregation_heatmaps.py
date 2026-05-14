@@ -2,8 +2,8 @@
 Merged heatmap figure: Metacell | Imputation: KNN | Imputation: MAGIC
 
 Imports data extraction functions from:
-  - geneRNBI.src.data_aggregation.post_granular
-  - geneRNBI.src.imputation.post_imputation
+  - genernbi_supp.src.data_aggregation.post_granular
+  - genernbi_supp.src.imputation.post_imputation
 
 Output:
   results/figs/merged_metacell_imputation_heatmap.png
@@ -16,9 +16,9 @@ import matplotlib.colors as mcolors
 import matplotlib.cm as cm
 import seaborn as sns
 
-from geneRNBI.src.helper import load_env
-from geneRNBI.src.data_aggregation.post_granular import get_granularity_heatmap_pivot
-from geneRNBI.src.imputation.post_imputation import get_imputation_heatmap_pivot
+from genernbi_supp.src.helper import load_env
+from genernbi_supp.src.data_aggregation.metacell.post import get_granularity_heatmap_pivot
+from genernbi_supp.src.imputation.post_imputation import get_imputation_heatmap_pivot
 
 env = load_env()
 figs_dir = f"{env['RESULTS_DIR']}/figs"
@@ -42,7 +42,7 @@ titles    = ['Metacell', 'Imputation: KNN', 'Imputation: MAGIC']
 
 n_rows = len(all_metrics)
 panel_widths = [max(1, len(p.columns)) for p in pivots]
-total_w = 4
+total_w = 5
 fig_h   = 2.5
 
 fig, axes = plt.subplots(1, 3, figsize=(total_w, fig_h),

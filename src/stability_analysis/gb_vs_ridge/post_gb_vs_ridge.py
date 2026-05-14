@@ -14,10 +14,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 warnings.filterwarnings("ignore")
 
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 env = load_env()
 
-sys.path.insert(0, env['geneRNBI_DIR'])
+sys.path.insert(0, env['genernbi_supp_DIR'])
 from src.helper import plot_raw_scores, surrogate_names, colors_blind
 
 RESULTS_DIR = env['RESULTS_DIR']

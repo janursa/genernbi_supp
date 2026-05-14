@@ -1,4 +1,5 @@
 import os
+import copy
 import pandas as pd
 import numpy as np
 import anndata as ad
@@ -36,7 +37,7 @@ if __name__ == '__main__':
     dataset = args.dataset
     results_dir = f'{RESULTS_DIR}/experiment/global_grns/'
     os.makedirs(results_dir, exist_ok=True)
-    global_grn_dir = f'{TASK_GRN_INFERENCE_DIR}/resources/grn_models/global/'
+    global_grn_dir = f'{RESULTS_DIR}/global_models/'
     
     global_grns = os.listdir(global_grn_dir) #all the files in the global_grn_dir
     inferred_methods = ['negative_control', 'pearson_corr', 'grnboost', 'scenicplus', 'scenic']
@@ -65,8 +66,9 @@ if __name__ == '__main__':
     for model in all_models:
         # - grn evaluation
         print(f"Calculating metrics for {model}...", flush=True)
-        par['prediction'] = f'{results_dir}/{naming_convention(dataset, model)}'
-        metric_rr = main_metrics(par)
+        par_model = copy.deepcopy(par)
+        par_model['prediction'] = f'{results_dir}/{naming_convention(dataset, model)}'
+        metric_rr = main_metrics(par_model)
         metric_rr['model'] = model
         metrics_all.append(metric_rr)
     metrics_all = pd.concat(metrics_all, axis=0)

@@ -19,20 +19,19 @@ import os
 from scipy import stats
 import warnings
 warnings.filterwarnings("ignore")
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 
 env = load_env()
 RESULTS_DIR = env['RESULTS_DIR']
 figs_dir = F"{env['RESULTS_DIR']}/figs"
 
-from geneRNBI.src.helper import plot_heatmap, surrogate_names, custom_jointplot, palette_celltype, \
+from genernbi_supp.src.helper import plot_heatmap, surrogate_names, custom_jointplot, palette_celltype, \
                        palette_methods, \
                        palette_datasets, colors_blind, linestyle_methods, palette_datasets, CONTROLS3, linestyle_methods, retrieve_grn_path, \
-                        plot_raw_scores, palette_metrics
+                        plot_raw_scores, palette_metrics, surrogate_names
 from task_grn_inference.src.utils.config import METRICS
 
-DATASETS = ['op', '300BCG', 'norman']  # ibd datasets excluded
-dataset_labels = {'op': 'OPSCA', '300BCG': '300BCG', 'norman': 'Norman'}
+DATASETS = ['op', '300BCG', 'norman', 'soundlife_vaccine']  # ibd datasets excluded
 
 def load_scores(dataset, method=None):
     df = pd.read_csv(f'{RESULTS_DIR}/experiment/granular_pseudobulk/metrics_{dataset}.csv')
@@ -120,7 +119,7 @@ def get_granularity_heatmap_pivot(cap=2.0):
         sc_row = df_avg[df_avg['granularity'] == -1].drop(columns='granularity').iloc[0]
         pseudobulk_rows = df_avg[df_avg['granularity'] != -1].drop(columns='granularity')
         ratio = pseudobulk_rows.mean() / sc_row
-        heatmap_data[dataset_labels[dataset]] = ratio
+        heatmap_data[surrogate_names[dataset]] = ratio
     pivot = pd.DataFrame(heatmap_data).T.T
     return pivot.clip(upper=cap), pivot.isna()
 
@@ -144,7 +143,7 @@ if __name__ == '__main__':
             plot_line_pseudobulking_effect(scores_mat, ax,
                                            show_ylabel=(i == 0),
                                            show_xlabel=(i == n // 2))
-            ax.set_title(dataset_labels[dataset], fontsize=9)
+            ax.set_title(surrogate_names[dataset], fontsize=9)
 
         # Build a single figure-level legend from palette_metrics
         metric_display = [surrogate_names.get(m, m) for m in METRICS if surrogate_names.get(m, m) in palette_metrics]

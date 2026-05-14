@@ -23,14 +23,14 @@ import scanpy as sc
 import gseapy as gp
 warnings.filterwarnings('ignore')
 
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 
 env = load_env()
 RESULTS_DIR = env['RESULTS_DIR']
 FIGS_DIR    = f"{RESULTS_DIR}/figs"
 os.makedirs(FIGS_DIR, exist_ok=True)
 
-sys.path.append(env['geneRNBI_DIR'])
+sys.path.append(env['genernbi_supp_DIR'])
 from src.helper import surrogate_names, palette_methods
 
 # ── Constants ─────────────────────────────────────────────────────────────────
@@ -145,7 +145,7 @@ def _load_tf_data():
                .mean().rename('mean_ws').reset_index())
     tf_mean['group'] = classify_groups(tf_mean['mean_ws'])
 
-    perturb = pd.read_csv(f'{RESULTS_DIR}/perturb_effect_all.csv')
+    perturb = pd.read_csv(f'{RESULTS_DIR}/exp_analysis/perturb_effect_all.csv')
     perturb_rep = (perturb[perturb['Dataset'] == 'replogle']
                    [['perturbation', 'Expression fold change']]
                    .drop_duplicates()

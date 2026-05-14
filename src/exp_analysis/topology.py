@@ -18,7 +18,7 @@ import warnings
 import os
 import warnings
 from scipy import stats
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 warnings.filterwarnings("ignore")
 
 env = load_env()
@@ -27,7 +27,7 @@ figs_dir = f"{env['RESULTS_DIR']}/figs/consensus_regulators"
 os.makedirs(figs_dir, exist_ok=True)
 
 
-sys.path.append(env['geneRNBI_DIR'])
+sys.path.append(env['genernbi_supp_DIR'])
 from src.helper import plot_heatmap, surrogate_names, custom_jointplot, palette_celltype, \
                        palette_methods, \
                        palette_datasets, colors_blind, linestyle_methods, palette_datasets, CONTROLS3, linestyle_methods, retrieve_grn_path, \
@@ -44,6 +44,7 @@ from src.utils.util import read_prediction
 
 exp_objs_dict_dict = {}
 for dataset in DATASETS:
+    print(dataset, flush=True)
 # dataset = 'op' #'op', nakatake, adamson
     par_top_analysis = {
             'grn_models': METHODS,
@@ -75,6 +76,7 @@ for dataset in DATASETS:
 
 
 for i, dataset in enumerate(DATASETS):
+    print(dataset, flush=True)
     exp_objs_dict = exp_objs_dict_dict[dataset]
     links_n = {}
     source_n = {}

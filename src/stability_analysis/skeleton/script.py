@@ -27,7 +27,7 @@ sys.path.insert(0, env['METRICS_DIR'])
 from util import naming_convention, process_links
 from src.params import get_par
 
-sys.path.insert(0, env['geneRNBI_DIR'])
+sys.path.insert(0, env['genernbi_supp_DIR'])
 
 # ------------------------------------------------------------------ helpers --
 

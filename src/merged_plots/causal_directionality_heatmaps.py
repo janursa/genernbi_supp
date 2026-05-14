@@ -15,8 +15,8 @@ import matplotlib.colors as mcolors
 import matplotlib.cm as cm
 import seaborn as sns
 
-from geneRNBI.src.helper import load_env
-from geneRNBI.src.stability_analysis.causal_directionality.post_causal_directionality import (
+from genernbi_supp.src.helper import load_env
+from genernbi_supp.src.stability_analysis.causal_directionality.post_causal_directionality import (
     get_causal_directionality_pivots,
 )
 

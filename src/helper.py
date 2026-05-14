@@ -680,3 +680,7 @@ def plot_raw_scores(scores_mat, ax):
     ax.set_ylabel('')
 
 
+_env = load_env()
+TASK_GRN_INFERENCE_DIR = _env['TASK_GRN_INFERENCE_DIR']
+RESULT_DIR = _env['RESULTS_DIR']
+

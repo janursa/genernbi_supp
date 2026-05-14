@@ -3,7 +3,7 @@
 Compute regulators_consensus JSON for MMP multiome and dogma datasets.
 
 Run from task_grn_inference repo root:
-    python3 /home/jnourisa/projs/ongoing/geneRNBI/src/MMP/evaluation/compute_consensus.py
+    python3 /home/jnourisa/projs/ongoing/genernbi_supp/src/MMP/evaluation/compute_consensus.py
 
 Output: resources/results/MMP/evaluation/regulators_consensus_MMP_{dataset}.json
 """

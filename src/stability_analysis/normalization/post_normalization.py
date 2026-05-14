@@ -18,7 +18,7 @@ import warnings
 import os
 import warnings
 from scipy import stats
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 warnings.filterwarnings("ignore")
 
 env = load_env()
@@ -27,7 +27,7 @@ figs_dir = f"{env['RESULTS_DIR']}/figs/consensus_regulators"
 os.makedirs(figs_dir, exist_ok=True)
 
 
-sys.path.insert(0, env['geneRNBI_DIR'])
+sys.path.insert(0, env['genernbi_supp_DIR'])
 from src.helper import plot_heatmap, surrogate_names, custom_jointplot, palette_celltype, \
                        palette_methods, \
                        palette_datasets, colors_blind, linestyle_methods, palette_datasets, CONTROLS3, linestyle_methods, retrieve_grn_path, \

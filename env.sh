@@ -1,20 +1,18 @@
 # env.sh
+base_dir=$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    base_dir="/home/jnourisa/projs/ongoing"
     resources_dir="${base_dir}/task_grn_inference/resources"
 else
-    base_dir="/Users/jno24/Documents/projs/ongoing"
     resources_dir="${base_dir}/task_grn_inference/resources"
-
 fi
 
 echo "Base directory set to: $base_dir"
-export geneRNBI_DIR="${base_dir}/geneRNBI" #->file directiory
+export genernbi_supp_DIR="${base_dir}/genernbi_supp" #->file directiory
 export TASK_GRN_INFERENCE_DIR="${base_dir}/task_grn_inference" #-> it's ../../task_grn_inference
 export DOCS_SOURCE_DIR="${TASK_GRN_INFERENCE_DIR}/docs/source"
 export DOCS_IMAGES_DIR="${DOCS_SOURCE_DIR}/images"
 
-export PYTHONPATH="$geneRNBI_DIR:${PYTHONPATH:-}"
+export PYTHONPATH="$genernbi_supp_DIR:${PYTHONPATH:-}"
 
 export RESOURCES_DIR="${resources_dir}"
 export RESULTS_DIR="${RESOURCES_DIR}/results"
@@ -29,7 +27,7 @@ export UTILS_DIR="${TASK_GRN_INFERENCE_DIR}/src/utils"
 
 # echo "Environment variables set:"
 # echo "TASK_GRN_INFERENCE_DIR=$TASK_GRN_INFERENCE_DIR"
-# echo "geneRNBI_DIR=$geneRNBI_DIR"
+# echo "genernbi_supp_DIR=$genernbi_supp_DIR"
 # echo "RESULTS_DIR=$RESULTS_DIR"
 # echo "IMAGES_DIR=$IMAGES_DIR"
 # echo "RESOURCES_DIR=$RESOURCES_DIR"

@@ -21,10 +21,10 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 warnings.filterwarnings("ignore")
 
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 env = load_env()
 
-sys.path.insert(0, env['geneRNBI_DIR'])
+sys.path.insert(0, env['genernbi_supp_DIR'])
 from src.helper import surrogate_names, METHODS, palette_metrics, palette_methods
 
 RESULTS_DIR = env['RESULTS_DIR']

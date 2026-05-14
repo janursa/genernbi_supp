@@ -2,12 +2,21 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path="../env.sh", override=True)
 import os
 import sys
-env = os.environ  
+env = os.environ
 sys.path.append(env['UTILS_DIR'])
+
+def _resolve_evaluation_data(dataset):
+    bulk = f"{env['EVALUATION_DIR']}/{dataset}_bulk.h5ad"
+    sc   = f"{env['EVALUATION_DIR']}/{dataset}_sc.h5ad"
+    if os.path.exists(bulk):
+        return bulk
+    if os.path.exists(sc):
+        return sc
+    raise FileNotFoundError(f"No evaluation data found for '{dataset}': tried {bulk} and {sc}")
 
 def get_regression_par(dataset):
     par = {
-        'evaluation_data': f"{env['EVALUATION_DIR']}/{dataset}_bulk.h5ad",
+        'evaluation_data': _resolve_evaluation_data(dataset),
         'tf_all': f"{env['PRIOR_DIR']}/tf_all.csv",
         'apply_skeleton': False,
         'apply_tf': True,
@@ -27,7 +36,7 @@ def get_par(dataset):
     par = {
         'rna': f"{env['EVALUATION_DIR']}/{dataset}_rna.h5ad",
         'atac': f"{env['EVALUATION_DIR']}/{dataset}_atac.h5ad",
-        'evaluation_data': f"{env['EVALUATION_DIR']}/{dataset}_bulk.h5ad",
+        'evaluation_data': _resolve_evaluation_data(dataset),
         'evaluation_data_sc': f"{env['EXTENDED_DIR']}/{dataset}_train_sc.h5ad",
         'evaluation_data_de': f"{env['EXTENDED_DIR']}/{dataset}_de.h5ad",
         'tf_all': f"{env['PRIOR_DIR']}/tf_all.csv",
@@ -52,7 +61,7 @@ def get_par(dataset):
         'geneset_go_bp_2023': f"{env['RESOURCES_DIR']}/grn_benchmark/prior/pathways/go_bp_2023.gmt",
         'geneset_bioplanet_2019': f"{env['RESOURCES_DIR']}/grn_benchmark/prior/pathways/bioplanet_2019.gmt",
         'geneset_wikipathways_2019': f"{env['RESOURCES_DIR']}/grn_benchmark/prior/pathways/wikipathways_2019.gmt",
-        'output_detailed_metrics': True,
+        'output_detailed_metrics': False,
         'n_top_genes': 3000
     }
     return par

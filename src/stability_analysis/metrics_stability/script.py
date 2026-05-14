@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import os
 
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 
 env = load_env()
 RESULTS_DIR = env['RESULTS_DIR']

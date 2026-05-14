@@ -33,7 +33,7 @@ import argparse
 from bisect import bisect_right
 
 TASK_GRN_DIR = '/home/jnourisa/projs/ongoing/task_grn_inference'
-GENERNBI_DIR = '/home/jnourisa/projs/ongoing/geneRNBI'
+GENERNBI_DIR = '/home/jnourisa/projs/ongoing/genernbi_supp'
 CIIM_TOOLS   = '/vol/projects/CIIM/agentic_central/tools/ciim/code'
 BEDTOOLS     = '/vol/biotools/bin/bedtools'
 

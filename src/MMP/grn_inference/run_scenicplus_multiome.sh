@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=scenicplus_multiome
-#SBATCH --output=/home/jnourisa/projs/ongoing/geneRNBI/src/MMP/logs/scenicplus_multiome_%j.out
-#SBATCH --error=/home/jnourisa/projs/ongoing/geneRNBI/src/MMP/logs/scenicplus_multiome_%j.err
+#SBATCH --output=/home/jnourisa/projs/ongoing/genernbi_supp/src/MMP/logs/scenicplus_multiome_%j.out
+#SBATCH --error=/home/jnourisa/projs/ongoing/genernbi_supp/src/MMP/logs/scenicplus_multiome_%j.err
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=20
 #SBATCH --time=24:00:00
@@ -11,7 +11,7 @@
 #SBATCH --mail-user=jalil.nourisa@gmail.com
 
 set -e
-mkdir -p /home/jnourisa/projs/ongoing/geneRNBI/src/MMP/logs
+mkdir -p /home/jnourisa/projs/ongoing/genernbi_supp/src/MMP/logs
 echo "=== SCENIC+ MMP multiome ==="
 echo "Start: $(date)"
 cd /home/jnourisa/projs/ongoing/task_grn_inference

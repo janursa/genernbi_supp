@@ -78,11 +78,11 @@ if __name__ == '__main__':
                             'cellnet_human_Hg1332/networks/heart.parquet',
                             ],
         'raw_datasets_dir': f'{RESULT_DIR}/resources/datasets_raw/',
-        'grns_dir': f'{RESULT_DIR}/resources/grn_models/global/',
+        'grns_dir': f'{RESULT_DIR}/resources/output/global_models/',
         'max_n_links': 50_000,
     }
-    os.makedirs(f'{RESULT_DIR}/resources/grn_models/', exist_ok=True)
-    
+    os.makedirs(f'{RESULT_DIR}/resources/output/global_models/', exist_ok=True)
+
     if False:
         print('Getting data ...')
         get_dataset(par)

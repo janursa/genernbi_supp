@@ -9,7 +9,7 @@ sys.path.insert(0, env['UTILS_DIR'])
 sys.path.insert(0, env['METRICS_DIR'])
 from src.params import get_par
 
-sys.path.insert(0, env['geneRNBI_DIR'])
+sys.path.insert(0, env['genernbi_supp_DIR'])
 from src.stability_analysis.causal_directionality.helper import main as main_causal
 
 parser = argparse.ArgumentParser()

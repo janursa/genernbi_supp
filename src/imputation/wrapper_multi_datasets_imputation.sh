@@ -9,8 +9,9 @@ set -euo pipefail
 cd "$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"
 source env.sh
 
-DATASETS=("norman" "300BCG" "ibd_cd" "ibd_uc")
-SCRIPT="src/stability_analysis/imputation/experiment_imputation.sh"
+# DATASETS=("norman" "300BCG" "ibd_cd" "ibd_uc")
+DATASETS=("soundlife" "soundlife_vaccine" "MSCIC")
+SCRIPT="src/imputation/experiment_imputation.sh"
 WORKDIR=$(pwd)
 
 for dataset in "${DATASETS[@]}"; do

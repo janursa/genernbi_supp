@@ -7,6 +7,6 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=jalil.nourisa@gmail.com
 
-cd /home/jnourisa/projs/ongoing/geneRNBI
+cd /home/jnourisa/projs/ongoing/genernbi_supp
 source env.sh
-/home/jnourisa/miniconda3/envs/py10/bin/python src/stability_analysis/pseudobulk/granularity/script.py
+/home/jnourisa/miniconda3/envs/py10/bin/python src/data_aggregation/metacell/script.py

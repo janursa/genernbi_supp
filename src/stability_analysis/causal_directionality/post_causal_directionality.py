@@ -18,10 +18,10 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 warnings.filterwarnings("ignore")
 
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 env = load_env()
 
-sys.path.insert(0, env['geneRNBI_DIR'])
+sys.path.insert(0, env['genernbi_supp_DIR'])
 from src.helper import surrogate_names, METHODS, palette_metrics, palette_methods
 from task_grn_inference.src.utils.config import DATASETS
 
@@ -41,7 +41,7 @@ SKIP_METHODS = {'spearman_corr'}
 exp_dir = f"{RESULTS_DIR}/experiment/causal_directionality"
 all_scores = pd.read_csv(f"{RESULTS_DIR}/all_scores.csv")
 
-SKIP_DATASETS = {'ibd_cd', 'ibd_uc'}
+SKIP_DATASETS = {'ibd_cd', 'ibd_uc', '300BCG', 'nakatake', 'soundlife',  'soundlife_vaccine', 'norman'}
 
 records = []
 for f in sorted(os.listdir(exp_dir)):

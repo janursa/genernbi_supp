@@ -8,7 +8,7 @@ set -euo pipefail
 
 METHODS=(grnboost scenicplus celloracle ppcor granie)
 DATASETS=(multiome dogma)
-JOB_SCRIPT=/home/jnourisa/projs/ongoing/geneRNBI/src/MMP/evaluation/run_regression_job.sh
+JOB_SCRIPT=/home/jnourisa/projs/ongoing/genernbi_supp/src/MMP/evaluation/run_regression_job.sh
 
 echo "Submitting MMP regression jobs..."
 for dataset in "${DATASETS[@]}"; do

@@ -8,7 +8,8 @@
 # Env vars passed to script.py (all default false except METRICS=true):
 #   PSEUDOBULK=true/false   INFER_GRN=true/false   METRICS=true/false
 
-DATASETS="${@:-op 300BCG ibd_cd ibd_uc norman}"
+# DATASETS="${@:-op 300BCG ibd_cd ibd_uc norman}"
+DATASETS="${@:-soundlife soundlife_vaccine}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GRNBI_DIR="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
 

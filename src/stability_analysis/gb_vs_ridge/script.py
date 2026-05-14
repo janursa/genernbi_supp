@@ -36,7 +36,7 @@ def main_metrics(par):
 
 SELECTED_METHODS = ['pearson_corr', 'grnboost', 'ppcor', 'portia', 'scenic']
 MULTIOMICS_EXTRA_METHODS = ['scenicplus', 'celloracle']
-MULTIOMICS_DATASETS = ['op', 'ibd_uc', 'ibd_cd']
+MULTIOMICS_DATASETS = ['op', 'ibd_uc', 'ibd_cd', 'MSCIC']
 
 
 def run(dataset, reg_type):

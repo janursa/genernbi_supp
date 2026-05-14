@@ -18,13 +18,13 @@ import warnings
 import os
 import warnings
 from scipy import stats
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 
 env = load_env()
 RESULTS_DIR = env['RESULTS_DIR']
 figs_dir = F"{env['RESULTS_DIR']}/figs"
 
-sys.path.append(env['geneRNBI_DIR'])
+sys.path.append(env['genernbi_supp_DIR'])
 from src.helper import plot_heatmap, surrogate_names, custom_jointplot, palette_celltype, \
                        palette_methods, palette_metrics, \
                        palette_datasets, colors_blind, linestyle_methods, palette_datasets, CONTROLS3, linestyle_methods, retrieve_grn_path, \
@@ -400,7 +400,7 @@ def dataset_metric_cols(dataset):
     return [c for c in cols if c in ALL_METRIC_COLS]
 
 # datasets with at least net + sign + weight complete
-DATASETS_TO_RUN = ['op', 'replogle', 'parsebioscience', 'norman', 'ibd_cd', 'ibd_uc']
+DATASETS_TO_RUN = ['op', 'replogle', 'parsebioscience', 'norman']
 
 for ds in DATASETS_TO_RUN:
     metrics = dataset_metric_cols(ds)
@@ -416,7 +416,7 @@ PERMUTATION_METRIC_MAP = {
 
 ALL_DATASETS_PERM = [
     'op', 'replogle', 'parsebioscience', 'norman',
-    'ibd_cd', 'ibd_uc', '300BCG', 'nakatake', 'xaira_HCT116', 'xaira_HEK293T',
+    'nakatake', 'xaira_HCT116', 'xaira_HEK293T',
 ]
 
 PERM_DIR = f"{RESULTS_DIR}/experiment/permute_grn"

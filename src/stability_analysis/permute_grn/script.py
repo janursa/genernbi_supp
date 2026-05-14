@@ -13,7 +13,7 @@ sys.path.insert(0, env['METRICS_DIR'])
 # from all_metrics.helper import main as main_metrics
 from src.params import get_par
 
-sys.path.insert(0, env['geneRNBI_DIR'])
+sys.path.insert(0, env['genernbi_supp_DIR'])
 from src.stability_analysis.permute_grn.helper import main as main_permute
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str)

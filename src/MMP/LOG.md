@@ -144,11 +144,11 @@
 
 | Script | Location | Purpose |
 |--------|----------|---------|
-| `merge_peaks.py` | `geneRNBI/src/MMP/` | Bedtools merge on outer-join ATAC → consensus peaks |
-| `script.py` | `geneRNBI/src/MMP/preprocess/` | Full processing: QC, CellTypist, normalize, metadata |
-| `compute_consensus.py` | `geneRNBI/src/MMP/evaluation/` | Compute regulators_consensus JSON for multiome + dogma |
-| `run_regression_job.sh` | `geneRNBI/src/MMP/evaluation/` | SLURM job: regression metric for one dataset × method |
-| `submit_regression.sh` | `geneRNBI/src/MMP/evaluation/` | Launcher: submits all 10 regression jobs |
+| `merge_peaks.py` | `genernbi_supp/src/MMP/` | Bedtools merge on outer-join ATAC → consensus peaks |
+| `script.py` | `genernbi_supp/src/MMP/preprocess/` | Full processing: QC, CellTypist, normalize, metadata |
+| `compute_consensus.py` | `genernbi_supp/src/MMP/evaluation/` | Compute regulators_consensus JSON for multiome + dogma |
+| `run_regression_job.sh` | `genernbi_supp/src/MMP/evaluation/` | SLURM job: regression metric for one dataset × method |
+| `submit_regression.sh` | `genernbi_supp/src/MMP/evaluation/` | Launcher: submits all 10 regression jobs |
 
 **Singularity image**: `ciim.sif` (has celltypist, scanpy, anndata, scipy)
 

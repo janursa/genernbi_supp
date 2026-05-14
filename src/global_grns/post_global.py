@@ -4,20 +4,20 @@ import warnings
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 
 env = load_env()
 RESULTS_DIR = env['RESULTS_DIR']
 figs_dir = f"{env['RESULTS_DIR']}/figs"
 
-from geneRNBI.src.helper import plot_heatmap, surrogate_names, palette_metrics, \
+from genernbi_supp.src.helper import plot_heatmap, surrogate_names, palette_metrics, \
                        palette_methods, \
                        palette_datasets, colors_blind, linestyle_methods, CONTROLS3, retrieve_grn_path, \
                         plot_raw_scores
 
 from task_grn_inference import METRICS
 
-INDIVIDUAL_DATASETS = ['op']
+INDIVIDUAL_DATASETS = ['op', 'parsebioscience', '300BCG', 'soundlife', 'soundlife_vaccine']
 EXCLUDE_DATASETS = ['ibd_cd', 'ibd_uc']
 
 
@@ -132,9 +132,8 @@ heatmap_df.index   = heatmap_df.index.map(lambda x: surrogate_names.get(x, x))
 heatmap_df.columns = heatmap_df.columns.map(lambda x: surrogate_names.get(x, x))
 heatmap_df = heatmap_df.sort_index()
 
-# Order datasets by mean ratio (most applicable first)
-dataset_order = heatmap_df.mean(axis=0).sort_values(ascending=False).index
-heatmap_df = heatmap_df[dataset_order]
+# Order datasets alphabetically
+heatmap_df = heatmap_df[sorted(heatmap_df.columns)]
 
 n_metrics  = len(heatmap_df)
 n_datasets = len(heatmap_df.columns)

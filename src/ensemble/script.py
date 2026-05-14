@@ -27,7 +27,7 @@ from tqdm import tqdm
 import warnings
 warnings.filterwarnings("ignore")
 
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='Run gene-wise ensemble GRN analysis')
@@ -46,7 +46,7 @@ skip_metrics = args.skip_metrics
 os.makedirs(rr_folder, exist_ok=True)
 
 env = load_env()
-sys.path.append(env['geneRNBI_DIR'])
+sys.path.append(env['genernbi_supp_DIR'])
 
 # Define models to ensemble
 grns = ['scenicplus', 'grnboost', 'pearson_corr', 'ppcor'] if dataset == 'op' else ['scenic', 'grnboost', 'pearson_corr', 'ppcor']
@@ -370,7 +370,7 @@ if True:
     from scipy.stats import mannwhitneyu
     from statsmodels.stats.multitest import multipletests
     
-    sys.path.append(env['geneRNBI_DIR'])
+    sys.path.append(env['genernbi_supp_DIR'])
     from src.helper import palette_methods, surrogate_names
 
     

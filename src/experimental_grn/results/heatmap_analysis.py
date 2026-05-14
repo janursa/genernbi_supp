@@ -28,7 +28,7 @@ import seaborn as sns
 REPO         = '/home/jnourisa/projs/ongoing/task_grn_inference'
 SCORE_DIR    = f'{REPO}/temp/experimental_grn/scores'
 OUT_DIR      = f'{REPO}/temp/experimental_grn/results'
-METRICS_YAML = f'{REPO}/resources/results/metrics_kept_per_dataset.yaml'
+METRICS_YAML = f'{REPO}/resources/results/exp_analysis/metrics_kept_per_dataset.yaml'
 
 # Human-readable labels for C-axis variations
 VARIATION_LABELS = {

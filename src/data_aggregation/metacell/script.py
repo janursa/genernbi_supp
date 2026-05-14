@@ -27,10 +27,10 @@ sys.path.append(meta["resources_dir"])
 sys.path.append(meta["util_dir"])
 sys.path.append(meta["metrics_dir"])
 # Pre-inject method helper dirs so their try/except sys.path appends find the right modules
-sys.path.append(f'{TASK_GRN_INFERENCE_DIR}/src/methods/portia')
+# sys.path.append(f'{TASK_GRN_INFERENCE_DIR}/src/methods/portia')
 
 from methods.pearson_corr.script import main as main_pearson_corr
-from methods.portia.script import main as main_portia
+# from methods.portia.script import main as main_portia
 from all_metrics.helper import main as main_metrics
 # from metrics.ws_distance.consensus.helper import main as main_consensus_ws_distance
 from process_data.helper_data import sum_by
@@ -59,7 +59,7 @@ def main_grnboost(par):
 
 METHODS = {
     'pearson_corr': main_pearson_corr,
-    'portia': main_portia,
+    # 'portia': main_portia,
     'grnboost': main_grnboost,
 }
 GRNBOOST_DEGREES = [-1.0, 9.0, 19.0]  # single cell, middle, max granularity
@@ -145,15 +145,19 @@ if __name__ == '__main__':
                     print(f'    Skipping {method_name} @ {granuality} (already exists)', flush=True)
                     continue
                 result = method_fn(par)
-                # portia returns a DataFrame without writing to disk; write it here
-                if result is not None and hasattr(result, 'to_csv'):
-                    dataset_id = ad.read_h5ad(par['rna'], backed='r').uns['dataset_id']
-                    output = ad.AnnData(X=None, uns={
-                        "method_id": method_name,
-                        "dataset_id": dataset_id,
-                        "prediction": result[["source", "target", "weight"]]
-                    })
-                    output.write(par['prediction'])
+                if result is not None:
+                    if hasattr(result, 'to_csv'):
+                        # portia returns a DataFrame
+                        dataset_id = ad.read_h5ad(par['rna'], backed='r').uns['dataset_id']
+                        output = ad.AnnData(X=None, uns={
+                            "method_id": method_name,
+                            "dataset_id": dataset_id,
+                            "prediction": result[["source", "target", "weight"]]
+                        })
+                        output.write(par['prediction'])
+                    elif hasattr(result, 'write_h5ad'):
+                        # pearson_corr and others return AnnData directly
+                        result.write_h5ad(par['prediction'])
     
     # - consensus 
     

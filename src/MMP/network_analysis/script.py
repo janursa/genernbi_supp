@@ -15,7 +15,7 @@ Figures:
 GWAS: 255 MMP-associated genes from GWAS Catalog (228 rows; traits: multiple myeloma,
       myeloma, mgus, smoldering, plasma cell).
 
-Run from geneRNBI repo root:
+Run from genernbi_supp repo root:
     python3 src/MMP/network_analysis/script.py
 
 Methods: GRNBoost2, SCENIC+, CellOracle, PPCOR, GRaNIE (5 methods)
@@ -31,7 +31,7 @@ import matplotlib.patches as mpatches
 
 # ── paths ─────────────────────────────────────────────────────────────────────
 TASK_GRN_DIR  = '/home/jnourisa/projs/ongoing/task_grn_inference'
-GENERNBI_DIR  = '/home/jnourisa/projs/ongoing/geneRNBI'
+GENERNBI_DIR  = '/home/jnourisa/projs/ongoing/genernbi_supp'
 RESULTS_MMP   = os.path.join(TASK_GRN_DIR, 'resources/results/MMP')
 OUT_DIR       = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output')
 os.makedirs(OUT_DIR, exist_ok=True)

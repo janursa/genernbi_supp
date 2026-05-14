@@ -15,6 +15,7 @@ PERMUTATION_METRIC_MAP = {
     'net':       ['regression', 'ws_distance', 'sem', 'tf_recovery', 'tf_binding', 'vc', 'gs_recovery'],
     'sign':      ['sem', 'vc'],
     'weight':    ['regression', 'ws_distance', 'tf_recovery', 'tf_binding', 'gs_recovery'],
+    'direction': ['regression', 'ws_distance', 'sem', 'tf_recovery', 'tf_binding', 'vc', 'gs_recovery'],
 }
 
 def impute_fun(par):

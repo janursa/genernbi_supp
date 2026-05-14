@@ -22,12 +22,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 warnings.filterwarnings("ignore")
 
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 env = load_env()
 
 sys.path.insert(0, env['TASK_GRN_INFERENCE_DIR'])
 from src.utils.config import METRICS as FINAL_METRICS
-from geneRNBI.src.helper import surrogate_names, colors_blind
+from genernbi_supp.src.helper import surrogate_names, colors_blind
 
 RESULTS_DIR = env['RESULTS_DIR']
 figs_dir = f"{RESULTS_DIR}/figs"
@@ -35,7 +35,7 @@ figs_imputation_dir = f"{figs_dir}/imputation"
 os.makedirs(figs_dir, exist_ok=True)
 os.makedirs(figs_imputation_dir, exist_ok=True)
 
-DATASETS = ["op", "300BCG", "norman"]  # ibd datasets excluded
+DATASETS = ["op", "300BCG", "norman", "soundlife_vaccine"]  # ibd datasets excluded
 exp_dir = f"{RESULTS_DIR}/experiment/imputation"
 
 frames = []
@@ -88,7 +88,6 @@ def plot_imput_vs_singlecell(ax, df_avg):
     ax.legend(loc=(1.02, 0.1), title='Metric', frameon=False, fontsize=6, title_fontsize=7)
 
 KEEP_METHODS = ['pearson_corr']
-dataset_labels = {'op': 'OPSCA', '300BCG': '300BCG', 'norman': 'Norman'}
 
 
 def get_imputation_heatmap_pivot(imput_key, cap=2.0):
@@ -107,7 +106,7 @@ def get_imputation_heatmap_pivot(imput_key, cap=2.0):
             continue
         baseline = baseline_rows[metric_cols].iloc[0]
         ratio = (imput_rows[metric_cols].iloc[0] / baseline).clip(upper=cap)
-        heatmap_data[dataset_labels.get(dataset, dataset)] = ratio
+        heatmap_data[surrogate_names.get(dataset, dataset)] = ratio
     pivot = pd.DataFrame(heatmap_data)
     return pivot.clip(upper=cap), pivot.isna()
 
@@ -148,7 +147,7 @@ if __name__ == '__main__':
         fig, ax = plt.subplots(1, 1, figsize=(4, 3))
         sns.barplot(long, x='imputation_method', y='value', hue='Metric', ax=ax, palette=colors_blind)
         ax.axhline(1.0, color='grey', linestyle='--', linewidth=0.8)
-        ax.set_title(dataset_labels.get(dataset, dataset), fontsize=11, fontweight='bold')
+        ax.set_title(surrogate_names.get(dataset, dataset), fontsize=11, fontweight='bold')
         ax.set_xlabel('')
         ax.set_ylabel('Relative performance\n(imputed / single-cell)')
         ax.margins(x=0.1, y=0.15)

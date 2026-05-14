@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
 SCORE_DIR  = '/home/jnourisa/projs/ongoing/task_grn_inference/temp/experimental_grn/scores'
-METRICS_YAML = '/home/jnourisa/projs/ongoing/task_grn_inference/resources/results/metrics_kept_per_dataset.yaml'
+METRICS_YAML = '/home/jnourisa/projs/ongoing/task_grn_inference/resources/results/exp_analysis/metrics_kept_per_dataset.yaml'
 OUT_DIR    = '/home/jnourisa/projs/ongoing/task_grn_inference/temp/experimental_grn/results'
 
 ALGOS   = ['pearson','spearman','lasso','ridge','elasticnet','grnboost']

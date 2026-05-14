@@ -19,14 +19,14 @@ import os
 import warnings
 from scipy import stats
 from pathlib import Path
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 
 env = load_env()
 RESULTS_DIR = env['RESULTS_DIR']
 figs_dir = F"{env['RESULTS_DIR']}/figs/gt_analysis"
 os.makedirs(figs_dir, exist_ok=True)
 
-sys.path.append(env['geneRNBI_DIR'])
+sys.path.append(env['genernbi_supp_DIR'])
 from src.helper import plot_heatmap, surrogate_names, custom_jointplot, palette_celltype, \
                        palette_methods, \
                        palette_datasets, colors_blind, linestyle_methods, palette_datasets, CONTROLS3, linestyle_methods, retrieve_grn_path, \

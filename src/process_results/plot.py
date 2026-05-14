@@ -82,7 +82,7 @@ def main():
     env = load_env()
 
     task_dir = env["TASK_GRN_INFERENCE_DIR"]
-    grn_dir = env["geneRNBI_DIR"]
+    grn_dir = env["genernbi_supp_DIR"]
     sys.path.insert(0, task_dir)
     from task_grn_inference.src.utils.config import DATASETS_METRICS, METHODS, METRICS
 

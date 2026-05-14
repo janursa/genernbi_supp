@@ -31,10 +31,10 @@ from joblib import Parallel, delayed
 
 warnings.filterwarnings('ignore')
 
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 env = load_env()
 RESULTS_DIR = env['RESULTS_DIR']
-sys.path.append(env['geneRNBI_DIR'])
+sys.path.append(env['genernbi_supp_DIR'])
 sys.path.append(env['UTILS_DIR'])
 sys.path.append(env['METRICS_DIR'])
 

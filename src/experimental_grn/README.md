@@ -1,3 +1,58 @@
+# GRN inference methods
+
+A reference of expression-only base inference algorithms (no prior knowledge required).
+
+## Currently implemented
+
+| Method | Family | Key idea |
+|--------|--------|----------|
+| pearson | Correlation | TF–gene Pearson correlation |
+| spearman | Correlation | TF–gene Spearman (rank-based) correlation |
+| lasso | Regression | L1 regression per target gene |
+| ridge | Regression | L2 regression per target gene |
+| elasticnet | Regression | L1+L2 regression per target gene |
+| grnboost | Regression | Gradient boosting (GRNBoost2) importance per target gene |
+
+## Candidate additions
+
+### Correlation / Partial Correlation
+
+| Method | Key idea |
+|--------|----------|
+| **PPCOR** | Partial Pearson/Spearman — removes confounding from other genes via semi-partial correlation |
+| **PIDC** | Partial Information Decomposition & Context — uses a third variable to condition mutual information |
+
+### Mutual Information
+
+| Method | Key idea |
+|--------|----------|
+| **ARACNE** | MI between TF–gene pairs + Data Processing Inequality to prune indirect edges |
+| **CLR** | Context Likelihood of Relatedness — MI normalized by per-gene background distribution |
+| **MRNET** | Max Relevance NETwork — MI-based, maximises relevance to target while minimising redundancy |
+
+### Precision Matrix / Graphical Models
+
+| Method | Key idea |
+|--------|----------|
+| **GLASSO** | Graphical LASSO — sparse inverse covariance; direct edge = partial correlation |
+| **PORTIA** | Fast closed-form matrix inversion; reformulates GRN as a system of linear equations |
+
+### Stability-Selection Regression
+
+| Method | Key idea |
+|--------|----------|
+| **TIGRESS** | LARS regression with stability selection — scores TF importance by bootstrap frequency |
+
+### Neural Network / Deep Learning
+
+| Method | Key idea |
+|--------|----------|
+| **DeepDRIM** | Deep CNN on pairwise expression profiles of TF and target gene |
+| **DAZZLE** | Attention-based deep learning; learns non-linear TF–gene dependencies |
+| **scGNN** | Graph neural network; propagates expression signals over a cell–cell graph |
+
+---
+
 # experimental_grn
 
 Benchmarks the effect of integrating **promoter motif** and **ATAC-seq chromatin accessibility** priors into GRN inference, across a C-axis of 7 filtering strategies (C0–C6) and 6 algorithms, evaluated on 10 datasets.

@@ -27,7 +27,7 @@ output_file="${output_dir}/metrics_${dataset}.csv"
 
 if [ "$run_imputation" = true ]; then
     echo "Running imputations..."
-    python src/stability_analysis/imputation/script.py \
+    python src/imputation/script.py \
     --dataset "$dataset" \
     --imputation_methods "${imputation_methods[@]}" \
     --output_dir "$output_dir"
@@ -38,8 +38,8 @@ if [ "$run_grn_inference" = true ]; then
     for inference_method in "${inference_methods[@]}"; do
         echo "Running GRN inference with $inference_method ..."
         for imputation in "${imputation_methods[@]}"; do
-            rna_file="${output_dir}/${dataset}_${imputation}_rna.h5ad"
-            prediction_file="${output_dir}/${dataset}_${imputation}_${inference_method}_prediction.h5ad"
+            rna_file="${output_dir}/${dataset}__${imputation}_rna.h5ad"
+            prediction_file="${output_dir}/${dataset}__${imputation}__${inference_method}_prediction.h5ad"
 
             if [ ! -f "$rna_file" ]; then
                 echo "RNA file not found: $rna_file"
@@ -61,7 +61,7 @@ if [ "$run_metrics" = true ]; then
     predictions=""
     for inference_method in "${inference_methods[@]}"; do
         for imputation in "${imputation_methods[@]}"; do
-            predictions="${predictions} ${output_dir}/${dataset}_${imputation}_${inference_method}_prediction.h5ad"
+            predictions="${predictions} ${output_dir}/${dataset}__${imputation}__${inference_method}_prediction.h5ad"
         done
     done
 
@@ -99,28 +99,14 @@ for f in score_files:
     df = pd.DataFrame(df)
 
     # Extract imputation method and inference method from filename
-    # Expected format: {dataset}_{imputation}_{inference_method}_prediction_score.h5ad
+    # Expected format: {dataset}__{imputation}__{inference_method}_prediction_score.h5ad
     basename = os.path.basename(f)
-    # Remove _score.h5ad suffix
-    basename = basename.replace('_score.h5ad', '')
-    # Remove _prediction suffix
-    basename = basename.replace('_prediction', '')
-    
-    # Split by underscore and extract components
-    parts = basename.split('_')
-    
-    # The format should be: dataset_imputation_inference_method
-    # e.g., op_original_grnboost or op_knn_pearson_corr
-    if len(parts) >= 3:
-        dataset = parts[0]
-        imputation_method = parts[1]
-        # inference method might have underscores (e.g., pearson_corr)
-        inference_method = '_'.join(parts[2:])
-    else:
-        # Fallback
-        dataset = parts[0] if len(parts) > 0 else "unknown"
-        imputation_method = parts[1] if len(parts) > 1 else "unknown"
-        inference_method = parts[2] if len(parts) > 2 else "unknown"
+    basename = basename.replace('_score.h5ad', '').replace('_prediction', '')
+    # Split on __ to get [dataset, imputation, inference_method]
+    parts = basename.split('__')
+    dataset         = parts[0] if len(parts) > 0 else "unknown"
+    imputation_method = parts[1] if len(parts) > 1 else "unknown"
+    inference_method  = parts[2] if len(parts) > 2 else "unknown"
     
     df["imputation_method"] = imputation_method
     df["inference_method"] = inference_method

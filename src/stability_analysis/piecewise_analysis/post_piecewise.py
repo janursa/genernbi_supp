@@ -19,13 +19,13 @@ import os
 import warnings
 from scipy import stats
 from statsmodels.stats.multitest import multipletests
-from geneRNBI.src.helper import load_env
+from genernbi_supp.src.helper import load_env
 
 env = load_env()
 RESULTS_DIR = env['RESULTS_DIR']
 figs_dir = F"{env['RESULTS_DIR']}/figs"
 
-sys.path.append(env['geneRNBI_DIR'])
+sys.path.append(env['genernbi_supp_DIR'])
 from src.helper import plot_heatmap, surrogate_names, custom_jointplot, palette_celltype, \
                        palette_methods, \
                        palette_datasets, colors_blind, linestyle_methods, palette_datasets, CONTROLS3, linestyle_methods, retrieve_grn_path, \
@@ -561,7 +561,7 @@ def wrapper_ws_analysis(dataset, ws_output):
         print(f"Saved: {os.path.abspath(file_name)}")
         fig.savefig(file_name, dpi=300, transparent=True, bbox_inches='tight')
     # ----- WS vs perturbation effect
-    perturb_effect_all = pd.read_csv(f'{RESULTS_DIR}/perturb_effect_all.csv')
+    perturb_effect_all = pd.read_csv(f'{RESULTS_DIR}/exp_analysis/perturb_effect_all.csv')
     perturb_effect_t = perturb_effect_all[perturb_effect_all['Dataset']==dataset]
     df_raw_mean = ws_thetas.groupby(['model', 'tf'])['WS distance (raw)'].mean().reset_index()
     df_raw_mean = df_raw_mean.merge(perturb_effect_t, left_on=['tf'], right_on=['perturbation'], how='left')
